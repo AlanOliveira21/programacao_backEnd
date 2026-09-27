@@ -26,6 +26,18 @@ function buscarLivroPorId(req, res) {
 function cadastrarLivro(req, res) {
     const { titulo, publico, qt_paginas} = req.body;
 
+    if(typeof(qt_paginas) !== "number" || qt_paginas <= 0) {
+        return res.status(400).json({
+            msg: "A quantidade de páginas deve ser um número maior que zero."
+        })
+    }
+
+    if(!titulo || !publico){
+        return res.status(400).json({
+            msg: "Todos os campos devem ser preechido"
+        });
+    }
+
     const novoId = livros.length > 0 ? livros[livros.length -1].id + 1 : 1;
 
     const novoLivro = {
@@ -37,12 +49,10 @@ function cadastrarLivro(req, res) {
 
     livros.push(novoLivro);
 
-    res.send("Livro recebido!");
+    res.status(201).json(novoLivro);
 }
 
 function atualizarLivro(req, res) {
-    
-    const {titulo, publico, qt_paginas} = req.body;
 
     const id = Number(req.params.id);
 
@@ -56,11 +66,15 @@ function atualizarLivro(req, res) {
         });
     }
 
+    const {titulo, publico, qt_paginas} = req.body;
+
     livro.titulo = titulo;
     livro.publico = publico;
     livro.qt_paginas = qt_paginas;
 
-    res.send("Livro alterado");
+    res.status(200).json({
+        msg: "Livro alterado"
+    });
 }
 
 function deletarLivro(req, res) {
