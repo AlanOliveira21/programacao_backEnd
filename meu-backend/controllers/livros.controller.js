@@ -3,7 +3,17 @@ import livros from "../data/livros.js";
 function listarLivros(req, res) {
     console.log(req.query);
 
-    res.json(livros);
+    const publico = req.query.publico;
+    const maxPaginas = req.query.qt_paginas;
+
+    const livrosPorPublico = publico
+        ? livros.filter((livro) => livro.publico === publico)
+        : livros;
+
+    const livrosFiltrados = livros.filter((livro) =>
+         livro.publico === publico && livro.qt_paginas <= maxPaginas);
+
+    res.json(livrosFiltrados);
 }
 
 function buscarLivroPorId(req, res) {
@@ -80,17 +90,17 @@ function atualizarLivro(req, res) {
 function deletarLivro(req, res) {
     const id = Number(req.params.id);
 
-    const livro = livros.findIndex((livro) =>
+    const indiceLivro = livros.findIndex((livro) =>
         livro.id === id
     );
 
-    if(livro === -1){
+    if(indiceLivro === -1){
         return res.status(404).json({
             msg: "Livro não encontrado."
         });
     }
 
-    livros.splice(livro, 1);
+    livros.splice(indiceLivro, 1);
 
     res.send("Livro deletado.");
 }

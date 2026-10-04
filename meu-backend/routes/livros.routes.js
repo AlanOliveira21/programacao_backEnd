@@ -18,6 +18,6 @@ router.post("/livros", cadastrarLivro);
 
 router.put("/livros/:id", atualizarLivro);
 
-router.delete("/livro/:id", deletarLivro);
+router.delete("/livros/:id", deletarLivro);
 
 export default router;
