@@ -4,14 +4,22 @@ function listarLivros(req, res) {
     console.log(req.query);
 
     const publico = req.query.publico;
-    const maxPaginas = req.query.qt_paginas;
 
-    const livrosPorPublico = publico
-        ? livros.filter((livro) => livro.publico === publico)
-        : livros;
+    let maxPaginas = undefined;
 
+    if (req.query.maxPaginas !== undefined) {
+        maxPaginas = Number(req.query.maxPaginas);
+    
+        if (Number.isNaN(maxPaginas)) {
+            return res.status(400).json({
+                msg: "O valor convertido não é um número válido."
+            });
+        }
+    }
     const livrosFiltrados = livros.filter((livro) =>
-         livro.publico === publico && livro.qt_paginas <= maxPaginas);
+        (!publico || livro.publico === publico) && 
+        (maxPaginas === undefined || livro.qt_paginas <= maxPaginas)
+    );
 
     res.json(livrosFiltrados);
 }
